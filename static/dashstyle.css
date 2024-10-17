@@ -1,0 +1,80 @@
+body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background-color: rgb(4, 5, 17);
+}
+
+.user-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 200px;
+  text-align: center;
+  color:white;
+  background-color:rgb(8, 14, 27);
+}
+
+
+
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  background: rgb(28, 14, 63);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  color:white;
+}
+
+.card input {
+  margin-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height:23px;
+}
+
+
+
+.buttons {
+  margin-top: 5px;
+  cursor: pointer;
+  background-color:rgb(10, 112, 10);
+  color:white;
+}
+.buttons:hover{
+  background-color:white;
+  color:rgb(10, 112, 10);
+}
+
+
+.boxImg{
+  
+  border-radius:50%;
+}
+.navatas{
+  min-height: 80;
+  background-color: rgb(23, 35, 104);
+  width: 100%;
+  flex-direction: column;
+  display: flex;
+  color: white;
+  align-items: center; /* Vertical */
+  justify-content: center; /* Horizontal */
+  padding-bottom:23px;
+}
+
+.delete {
+
+  background-color:rgb(198, 21, 21);
+  color:white;
+}

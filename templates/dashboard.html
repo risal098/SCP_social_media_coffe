@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Information</title>
+    <link rel="stylesheet" href="https://ppwsosmed.risalahqz.repl.co/static/dashstyle.css" />
+  </head>
+  <body>
+    <div
+      class="navatas"
+    >
+      <p style="font-size: 28px">DASHBOARD ADMIN</p>
+      <button onclick=showCardRegister()>Create Account</button>
+    </div>
+    <script>
+      function validate(email)
+      {
+        return email.match(
+          /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+      }
+      function deleteUser(userId){
+        fetch('https://ppwsosmed.risalahqz.repl.co/api/deleteUser', {
+            method: 'POST',
+            body: JSON.stringify({"userId":userId})
+        })
+        .then(response => response.text())
+        .then(result => {
+           window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+      }
+      function createUser(){
+        if(validate(document.getElementById("emailReg").value)!==null){
+          console.log(document.getElementById("emailReg").value);
+          console.log(validate(document.getElementById("emailReg").value));
+        fetch('https://ppwsosmed.risalahqz.repl.co/api/register', {
+            method: 'POST',
+            body: JSON.stringify({email: document.getElementById("emailReg").value,
+                                  username: document.getElementById("usernameReg").value,
+                                  password: document.getElementById("passwordReg").value
+                                 })
+        })
+        .then(response => response.text())
+        .then(result => {
+           window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+      }else{console.log("email tak valid");}}
+      function hideCard() {
+        const overlay = document.querySelector(".overlay");
+        overlay.style.display = "none";
+      }
+      function uploadImage(imgId, userId) {
+          const fileInput = document.getElementById(imgId);
+          const file = fileInput.files[0];
+
+          if (file) {
+              const formData = new FormData();
+              formData.append('userId', JSON.stringify({"userId":userId}));
+              formData.append('file', file);
+
+              fetch('https://ppwsosmed.risalahqz.repl.co/api/uploadProfile', {
+                  method: 'POST',
+                  body: formData
+              })
+              .then(response => response.text())
+              .then(result => {
+                 window.location.reload();
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+              });
+          } else {
+              console.log('Please select an image.');
+          }
+      }
+      function createBox(user) {
+        const boday = document.createElement("div");
+        const userBox = document.createElement("div");
+        userBox.className = "user-box";
+        const imgUser = document.createElement("img");
+        imgUser.src = `https://ppwsosmed.risalahqz.repl.co/userProfileImage/${user.userId}.jpg`;
+        imgUser.addEventListener('error',()=>{imgUser.src="https://ppwsosmed.risalahqz.repl.co/userProfileImage/defaultProfile.png";});
+        imgUser.className="boxImg";
+        imgUser.width=60;
+        imgUser.height=60;
+        
+        const userId = document.createElement("div");
+        userId.textContent = `User ID: ${user.userId}`;
+
+        const email = document.createElement("div");
+        email.textContent = `Email: ${user.email}`;
+
+        const username = document.createElement("div");
+        username.textContent = `Username: ${user.username}`;
+
+        const button = document.createElement("button");
+        button.textContent = "EDIT";
+        button.className = "buttons";
+        button.addEventListener("click", () =>
+          showCard(Object.assign({}, defaultUser, user))
+        );
+        const formImg = document.createElement("form");
+        const inputId=document.createElement("input");
+        const inputImg=document.createElement("input");
+        const buttonChangeImg=document.createElement("button");
+        inputId.type="hidden";
+        inputId.value=JSON.stringify({"userId":user.userId});
+        inputImg.type="file";
+        inputImg.accept="image/jpeg";
+        inputImg.id=`img${user.userId}`;
+        buttonChangeImg.type="submit";
+        buttonChangeImg.textContent="CHANGE IMAGE";
+        buttonChangeImg.className="buttons";
+        buttonChangeImg.addEventListener("click",()=>{uploadImage(`img${user.userId}`,user.userId);});
+        formImg.action="https://ppwsosmed.risalahqz.repl.co/api/uploadProfile";
+        const buttonDeleteUser=document.createElement("button");
+        buttonDeleteUser.addEventListener("click",()=>{deleteUser(user.userId);});
+        buttonDeleteUser.className="delete";
+        buttonDeleteUser.textContent="DELETE";
+        userBox.appendChild(imgUser);
+        userBox.appendChild(userId);
+        userBox.appendChild(email);
+        userBox.appendChild(username);
+        userBox.appendChild(button);
+        userBox.appendChild(inputId);
+        userBox.appendChild(inputImg);
+        userBox.appendChild(buttonChangeImg);
+        userBox.appendChild(buttonDeleteUser);
+      //  userBox.appendChild(formImg);
+
+        document.body.appendChild(boday);
+        boday.appendChild(userBox);
+      }
+      function showCardRegister() {
+      const overlay = document.querySelector(".overlay");
+      const card = document.querySelector(".card");
+      card.innerHTML = "";
+        const button = document.createElement("button");
+        const email = document.createElement("input");
+        const username = document.createElement("input");
+        const password = document.createElement("input");
+        email.type="text";
+        username.type="text";
+        password.type="text";
+        email.placeholder="email";
+        username.placeholder="username";
+        password.placeholder="password";
+        email.id="emailReg";
+        username.id="usernameReg";
+        password.id="passwordReg";
+        button.textContent = "SUBMIT";
+        button.addEventListener("click",()=>createUser()
+          /*
+          {fetch('https://ppwsosmed.risalahqz.repl.co/api/register', {
+            
+                                               method: 'POST',
+                                               body: JSON.stringify({email: document.getElementById("emailReg").value,
+                                                                     username: document.getElementById("usernameReg").value,
+                                                                     password: document.getElementById("passwordReg").value
+                                                                    })
+                                           })
+                                           .then(response => response.text())
+                                           .then(result => {
+                                              window.location.reload();
+                                           })
+                                           .catch(error => {
+                                               console.error('Error:', error);
+                                           })
+            ;}*/
+                               );
+        card.appendChild( email);
+        card.appendChild( username);
+        card.appendChild( password);
+        card.appendChild(button);
+        overlay.style.display = "flex";
+      }
+      function showCard(user) {
+        const overlay = document.querySelector(".overlay");
+        const card = document.querySelector(".card");
+        card.innerHTML = "";
+        const toptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userIdSource: 2, userIdTarget: user.userId }),
+        };
+        var temp = fetch(
+          "https://ppwsosmed.risalahqz.repl.co/api/getAnotherUserBasicData",
+          toptions
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            user = data;
+            console.log(JSON.stringify(user));
+            Object.entries(user).forEach(([key, value]) => {
+              const input = document.createElement("input");
+              const text = document.createElement("p");
+              text.textContent = key;
+              input.setAttribute("type", "text");
+              input.setAttribute("value", value);
+              input.setAttribute("placeholder", key);
+              input.setAttribute("id", key);
+              card.appendChild(text);
+              card.appendChild(input);
+            });
+            const button = document.createElement("button");
+            button.textContent = "SUBMIT";
+            button.className = "buttons";
+            button.addEventListener("click", () => {
+              console.log(`${user.userId} clicked`);
+              var sendObject = {
+                userId: document.getElementById("userId").value,
+                email: document.getElementById("email").value,
+                username: document.getElementById("username").value,
+                bio: document.getElementById("bio").value,
+                ttl: document.getElementById("ttl").value,
+                alamat: document.getElementById("alamat").value,
+              };
+              var sendJson = JSON.stringify(sendObject);
+              const toptions = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: sendJson,
+              };
+              var temp = fetch(
+                "https://ppwsosmed.risalahqz.repl.co/api/updateUserAllData",
+                toptions
+              )
+                .then((response) => response)
+                .catch((err) => console.error(err));
+              hideCard();
+              window.location.reload();
+            });
+            card.appendChild(button);
+            overlay.style.display = "flex";
+          })
+          .catch((err) => console.error(err));
+      }
+      const options = {
+        method: "GET",
+      };
+      var userData = [];
+      var temp = fetch(
+        "https://ppwsosmed.risalahqz.repl.co/api/getAllUser",
+        options
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          userData = data;
+          userData.forEach(createBox);
+          console.log(typeof userData);
+          console.log(JSON.stringify(userData));
+        })
+        .catch((err) => console.error(err));
+
+      const defaultUser = {
+        userId: "userId",
+        email: "email",
+        username: "username",
+        bio: "not set",
+        ttl: "not set",
+        alamat: "not set",
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const overlay = document.createElement("div");
+        overlay.className = "overlay";
+        overlay.addEventListener("click", hideCard);
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.addEventListener("click", (event) => event.stopPropagation());
+
+        overlay.appendChild(card);
+        document.body.appendChild(overlay);
+      });
+    </script>
+  </body>
+</html>
